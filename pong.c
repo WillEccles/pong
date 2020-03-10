@@ -31,8 +31,7 @@ void sighandler(int x) {
     if (sockfd != -1 && sockfd != 0) {
         close(sockfd);
     }
-    puts("");
-    exit(EXIT_SUCCESS);
+    _exit(EXIT_SUCCESS);
 }
 
 int main(int argc, char** argv) {
