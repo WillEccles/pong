@@ -1,0 +1,53 @@
+Description
+
+   Since I kept needing to make little C servers to test clients, I decided to
+   just make one that I could use over and over. I called it pong. Then, I
+   created a client to test the server (and others) called ping. They are both
+   in this repository.
+
+Building
+
+   Simply use the included Makefile, or do it yourself. There is one target for
+   pong and one target for ping, though the default 'all' target will cover both
+   of these. Use the 'clean' target to clean up compiled output.
+
+Usage
+
+1. Pong
+
+   Pong takes one required argument and one optional one. The first argument
+   (and the only required one) is the port on which to listen. The IP address
+   is not assignable at runtime, because I was too lazy to implement it. You
+   can configure the IP address in pong.c before building.
+
+   The optional second argument is the message to respond to requests with. The
+   default message is "pong!" but can be changed in pong.c.
+
+   Use ^C to quit pong.
+
+2. Ping
+
+   Ping (despite its name) has nothing to do with network latency. Instead, it
+   takes two required arguments and one optional argument. The required options,
+   in order, are the IP address and the port of the server to connect to. Since
+   I was too lazy to use getaddrinfo(3) to look up hosts, this must be an IPv4
+   address. You could modify ping.c to make it work with IPv6.
+
+   The optional third argument is the message to send to the server. This
+   defaults to "ping!" but can be changed in ping.c.
+
+3. Example
+
+   As a simple example, open one terminal and run 'pong 8080'. Then, open
+   another terminal and run 'ping 127.0.0.1 8080'. On the pong side, you should
+   see that it accepted a connection and received "ping!". Pong will then
+   continue listening for new connections. Ping will show that it connected,
+   sent a message, and then received "pong!" from the server. Ping will then
+   quit.
+
+License
+
+   There is no license associated with these programs. Do whatever you want with
+   them, they aren't particularly useful except as an example of networking with
+   sockets.
+
