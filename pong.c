@@ -6,6 +6,7 @@
 #include <string.h>
 #include <sys/socket.h>
 #include <unistd.h>
+#include <errno.h>
 
 /*
  * Config options
@@ -93,17 +94,33 @@ int main(int argc, char** argv) {
         
         if (0 == fork()) {
             close(sockfd);
-            if (read(cfd, inbuf, CONF_BFRLEN) == -1) {
-                perror("read");
-                exit(EXIT_FAILURE);
-            }
-            printf("\033[33;1mConnection from %s:%hu\033[m\nData: %s\n",
-                    inet_ntoa(clientaddr.sin_addr),
-                    ntohs(clientaddr.sin_port),
-                    inbuf);
-            if (-1 == write(cfd, response, strlen(response))) {
-                perror("write");
-                exit(EXIT_FAILURE);
+            while (1) {
+                memset(inbuf, 0, CONF_BFRLEN);
+                ssize_t r;
+                if ((r = read(cfd, inbuf, CONF_BFRLEN)) == -1) {
+                    if (errno != ECONNRESET) {
+                        perror("read");
+                        exit(EXIT_FAILURE);
+                    } else {
+                        shutdown(cfd, SHUT_RDWR);
+                        exit(EXIT_SUCCESS);
+                    }
+                }
+                if (r) {
+                    printf("\033[33;1mData from %s:%hu\033[m\n%s\n",
+                            inet_ntoa(clientaddr.sin_addr),
+                            ntohs(clientaddr.sin_port),
+                            inbuf);
+                }
+                if (-1 == write(cfd, response, strlen(response))) {
+                    if (errno != ECONNRESET) {
+                        perror("write");
+                        exit(EXIT_FAILURE);
+                    } else {
+                        shutdown(cfd, SHUT_RDWR);
+                        exit(EXIT_SUCCESS);
+                    }
+                }
             }
             exit(EXIT_SUCCESS);
         }
