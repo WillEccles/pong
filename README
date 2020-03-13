@@ -3,7 +3,7 @@ Description
    Since I kept needing to make little C servers to test clients, I decided to
    just make one that I could use over and over. I called it pong. Then, I
    created a client to test the server (and others) called ping. They are both
-   in this repository.
+   in this repository. Subsequently, I added a UDP version of pong.
 
 Building
 
@@ -24,6 +24,11 @@ Usage
    default message is "pong!" but can be changed in pong.c.
 
    Use ^C to quit pong.
+
+1.1.  Pongudp
+
+   Pongudp uses the same args as Pong and works the same way, but it uses UDP
+   instead.
 
 2. Ping
 
